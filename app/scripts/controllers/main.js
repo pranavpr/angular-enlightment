@@ -13,6 +13,9 @@ angular.module('angularApp')
   	var childRef = rootRef.child('message');
 
   	childRef.on('value', function(snapshot) {
+  		snapshot.forEach(function(item){
+  			console.log(item.key() + ' - ' + item.val());
+  		});
   		$timeout(function() {
   			console.log(snapshot.val());
   			$scope.message = snapshot.val();
