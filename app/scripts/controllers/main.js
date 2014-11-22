@@ -19,9 +19,53 @@ angular.module('angularApp')
     messagesRef.on('child_added', function(snapshot) {
       $timeout(function() {
         var snapshotVal = snapshot.val();
-        $scope.messages.push(snapshotVal);
+        console.log(snapshotVal);
+        $scope.messages.push({
+          text: snapshotVal.text,
+          user: snapshotVal.user,
+          key: snapshot.key()
+        });
       });
     });
+
+    messagesRef.on('child_changed', function(snapshot) {
+      $timeout(function() {
+        var snapshotVal = snapshot.val();
+        console.log(snapshotVal);
+        var message = findMessageByKey(snapshot.key());
+        message.text = snapshotVal.text;
+      });
+    });
+
+    messagesRef.on('child_removed', function(snapshot) {
+      $timeout(function() {
+        var snapshotVal = snapshot.val();
+        console.log(snapshotVal);
+        deleteMessageByKey(snapshot.key());
+      });
+    });
+
+    function deleteMessageByKey (key) {
+      for (var i = 0; i < $scope.messages.length; i++) {
+        var currentMessage = $scope.messages[i];
+        if (currentMessage.key === key) {
+          $scope.messages.splice(i, 1);
+          break;
+        }
+      }
+    }
+
+    function findMessageByKey (key) {
+      var messageFound = null;
+      for (var i = 0; i < $scope.messages.length; i++) {
+        var currentMessage = $scope.messages[i];
+        if (currentMessage.key === key) {
+          messageFound = currentMessage;
+          break;
+        }
+      }
+      return messageFound;
+    }
 
     $scope.sendMessage = function() {
       var newMessage = {
