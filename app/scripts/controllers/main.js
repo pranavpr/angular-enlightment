@@ -8,10 +8,25 @@
  * Controller of the angularApp
  */
 angular.module('angularApp')
-  .controller('MainCtrl', function ($scope) {
+  .controller('MainCtrl', function ($scope, $timeout) {
   	var rootRef = new Firebase('https://popping-fire-8603.firebaseio.com/');
   	var childRef = rootRef.child('message');
 
+  	childRef.on('value', function(snapshot) {
+  		$timeout(function() {
+  			console.log(snapshot.val());
+  			$scope.message = snapshot.val();
+  		});
+  	});
+
+  	$scope.$watch('message.text', function(newVal){
+  		if(!newVal) {
+  			return;
+  		}
+  		childRef.update({
+  			text: newVal
+  		});
+  	});
   	$scope.setMessage = function()
   	{
   		childRef.set({
