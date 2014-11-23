@@ -11,10 +11,16 @@ angular.module('angularApp')
   .controller('MainCtrl', function($scope, $timeout) {
     var rootRef = new Firebase('https://popping-fire-8603.firebaseio.com/');
     var messagesRef = rootRef.child('messages');
+    var titleRef = rootRef.child('title');
 
     $scope.currentUser = null;
     $scope.currentText = null;
     $scope.messages = [];
+    $scope.title = null;
+
+    titleRef.once('value', function(snapshot) {
+      $scope.title = snapshot.val();
+    });
 
     messagesRef.on('child_added', function(snapshot) {
       $timeout(function() {
@@ -75,6 +81,10 @@ angular.module('angularApp')
       messagesRef.push(newMessage);
       $scope.currentUser = null;
       $scope.currentText = null;
+    };
+
+    $scope.turnFeedOff = function() {
+      messagesRef.off();
     };
 
   });

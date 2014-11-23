@@ -1,8 +1,11 @@
+<h2>{{ title }}</h2>
 <div class="jumbotron">
  <div ng-repeat="message in messages">
    {{message.user}} - {{message.text}}
  </div>
 </div>
+
+<button type="button" class="btn btn-danger" ng-click="turnFeedOff()">Turn feed off</button>
 
 <div class="row marketing">
 <input type="text" class="form-control" ng-model="currentUser" />
